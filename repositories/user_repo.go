@@ -18,3 +18,7 @@ func (r *UserRepo) GetAllUsers() ([]model.User, error) {
 	err := r.DB.Find(&users).Error
 	return users, err
 }
+
+func (r *UserRepo) CreateUser(user *model.User) error {
+	return r.DB.Create(user).Error
+}
