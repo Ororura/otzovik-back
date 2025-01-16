@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"otzovik-back/api"
 	"otzovik-back/config"
 	"otzovik-back/repositories"
@@ -14,10 +15,13 @@ func main() {
 	userService := services.NewUserService(userRepo)
 	userHandler := api.NewUserHandler(userService)
 
-	router := api.NewRouter(userHandler)
+	reviewRepo := repositories.NewReviewRepo(db)
+	reviewService := services.NewReviewService(reviewRepo)
+	reviewHandler := api.NewReviewHandler(reviewService)
 
-	err := router.Run(":8080")
-	if err != nil {
-		return
+	router := api.MainRoute(userHandler, reviewHandler)
+
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("Ошибка запуска сервера: %v", err)
 	}
 }

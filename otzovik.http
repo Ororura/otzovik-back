@@ -3,9 +3,9 @@ POST http://localhost:8080/users
 Content-Type: application/json
 
 {
-  "id": 10,
-  "name": "ASIdhashd",
+  "name": "dkxcjnvjkldfglk",
   "email": "asjdhaskhjd@gmail.com"
 }
 
 ###
+GET http://localhost:8080/reviews/1

@@ -4,11 +4,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(handler *UserHandler) *gin.Engine {
+// MainRoute объединяет маршруты для пользователей и отзывов
+func MainRoute(userHandler *UserHandler, reviewHandler *ReviewHandler) *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/users", handler.GetUsers)
-	router.POST("/users", handler.CreateUser)
+	// Роуты для пользователей
+	userGroup := router.Group("/users")
+	{
+		userGroup.GET("", userHandler.GetUsers)    // Получить список пользователей
+		userGroup.POST("", userHandler.CreateUser) // Создать пользователя
+	}
+
+	// Роуты для отзывов
+	reviewGroup := router.Group("/reviews")
+	{
+		reviewGroup.GET("/:id", reviewHandler.GetReviewById) // Получить отзыв по ID
+	}
 
 	return router
 }
