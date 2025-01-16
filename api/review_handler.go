@@ -1,10 +1,12 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+	"otzovik-back/model"
 	"otzovik-back/services"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ReviewHandler struct {
@@ -36,4 +38,19 @@ func (h *ReviewHandler) GetReviewById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, review)
+}
+
+func (h *ReviewHandler) CreateReview(c *gin.Context) {
+	var review model.Review
+	if err := c.ShouldBindJSON(&review); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.Service.CreateReview(&review); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, review)
 }

@@ -29,3 +29,7 @@ func (r *ReviewRepo) GetReviewById(id *int) (model.Review, error) {
 
 	return review, nil
 }
+
+func (r *ReviewRepo) CreateReview(review *model.Review) error {
+	return r.DB.Create(review).Error
+}

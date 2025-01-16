@@ -20,3 +20,7 @@ func (s *ReviewService) GetAllReviews() ([]model.Review, error) {
 func (s *ReviewService) GetReviewById(id *int) (model.Review, error) {
 	return s.Repo.GetReviewById(id)
 }
+
+func (s *ReviewService) CreateReview(review *model.Review) error {
+	return s.Repo.CreateReview(review)
+}
