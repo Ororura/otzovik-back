@@ -1,11 +1,12 @@
 package handlers
 
 import (
-    "github.com/gin-gonic/gin"
-    "net/http"
-    "otzovik-back/internal/domain"
-    "otzovik-back/internal/domain/models"
-    "strconv"
+	"net/http"
+	"otzovik-back/internal/domain"
+	"otzovik-back/internal/domain/models"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ReviewHandler struct {
@@ -37,15 +38,30 @@ func (h *ReviewHandler) GetReviewById(c *gin.Context) {
 
 func (h *ReviewHandler) CreateReview(c *gin.Context) {
     var review models.Review
-    if err := c.ShouldBindJSON(&review); err != nil {
+
+    if err := c.ShouldBind(&review); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
 
-    if err := h.service.CreateReview(&review); err != nil {
+    file, _ := c.FormFile("image")
+
+    if err := h.service.CreateReview(&review, file); err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
 
     c.JSON(http.StatusCreated, review)
+}
+
+func (h *ReviewHandler) GetImage(c *gin.Context) {
+    imagePath := c.Param("imagePath")
+    
+    fullPath, err := h.service.GetImage(imagePath)
+    if err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Image not found"})
+        return
+    }
+
+    c.File(fullPath)
 } 

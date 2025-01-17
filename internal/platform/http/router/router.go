@@ -1,9 +1,10 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"otzovik-back/internal/platform/http/handlers"
 	"otzovik-back/internal/platform/http/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Router struct {
@@ -21,11 +22,9 @@ func NewRouter(userHandler *handlers.UserHandler, reviewHandler *handlers.Review
 }
 
 func (r *Router) SetupRoutes() {
-	// Middleware
 	r.engine.Use(middleware.Logger())
 	r.engine.Use(middleware.Recovery())
 
-	// API routes
 	api := r.engine.Group("/api/v1")
 	{
 		users := api.Group("/users")
@@ -38,8 +37,11 @@ func (r *Router) SetupRoutes() {
 		{
 			reviews.GET("/:id", r.reviewHandler.GetReviewById)
 			reviews.POST("", r.reviewHandler.CreateReview)
+			reviews.GET("/images/:imagePath", r.reviewHandler.GetImage)
 		}
 	}
+
+	r.engine.Static("/uploads", "./uploads")
 }
 
 func (r *Router) Run(addr string) error {
