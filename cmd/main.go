@@ -2,26 +2,38 @@ package main
 
 import (
 	"log"
-	"otzovik-back/api"
 	"otzovik-back/config"
-	"otzovik-back/repositories"
-	"otzovik-back/services"
+	"otzovik-back/internal/app/services"
+	"otzovik-back/internal/platform/database/repositories"
+	"otzovik-back/internal/platform/http/handlers"
+	"otzovik-back/internal/platform/http/router"
 )
 
 func main() {
-	db := config.SetupDataBase()
+	// Загрузка конфигурации
+	cfg := config.LoadConfig()
 
-	userRepo := repositories.NewUserRepo(db)
+	// Инициализация базы данных
+	db := config.SetupDatabase(cfg)
+
+	// Инициализация репозиториев
+	userRepo := repositories.NewUserRepository(db)
+	reviewRepo := repositories.NewReviewRepository(db)
+
+	// Инициализация сервисов
 	userService := services.NewUserService(userRepo)
-	userHandler := api.NewUserHandler(userService)
-
-	reviewRepo := repositories.NewReviewRepo(db)
 	reviewService := services.NewReviewService(reviewRepo)
-	reviewHandler := api.NewReviewHandler(reviewService)
 
-	router := api.MainRoute(userHandler, reviewHandler)
+	// Инициализация обработчиков
+	userHandler := handlers.NewUserHandler(userService)
+	reviewHandler := handlers.NewReviewHandler(reviewService)
 
-	if err := router.Run(":8080"); err != nil {
+	// Инициализация и настройка роутера
+	router := router.NewRouter(userHandler, reviewHandler)
+	router.SetupRoutes()
+
+	// Запуск сервера
+	if err := router.Run(":" + cfg.ServerPort); err != nil {
 		log.Fatalf("Ошибка запуска сервера: %v", err)
 	}
 }
