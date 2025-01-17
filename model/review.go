@@ -5,7 +5,7 @@ import "time"
 type Review struct {
 	ID         int       `json:"id"`
 	Text       string    `json:"text"`
-	DateCreate time.Time `json:"date_create"`
-	DateUpdate time.Time `json:"date_update"`
+	DateCreate time.Time `gorm:"default:NOW()"`
+	DateUpdate time.Time `gorm:"default:NOW()"`
 	AuthorID   int       `json:"author_id"`
 }
