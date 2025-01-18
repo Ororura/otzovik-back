@@ -1,10 +1,9 @@
 package repositories
 
 import (
+	"gorm.io/gorm"
 	"otzovik-back/internal/domain"
 	"otzovik-back/internal/domain/models"
-
-	"gorm.io/gorm"
 )
 
 type UserRepository struct {
@@ -23,4 +22,4 @@ func (r *UserRepository) GetAllUsers() ([]models.User, error) {
 
 func (r *UserRepository) CreateUser(user *models.User) error {
 	return r.db.Create(user).Error
-} 
+}
