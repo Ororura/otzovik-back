@@ -8,8 +8,8 @@ import (
 )
 
 type Router struct {
-	engine      *gin.Engine
-	userHandler  *handlers.UserHandler
+	engine        *gin.Engine
+	userHandler   *handlers.UserHandler
 	reviewHandler *handlers.ReviewHandler
 }
 
@@ -35,6 +35,7 @@ func (r *Router) SetupRoutes() {
 
 		reviews := api.Group("/reviews")
 		{
+			reviews.GET("", r.reviewHandler.GetReviews)
 			reviews.GET("/:id", r.reviewHandler.GetReviewById)
 			reviews.POST("", r.reviewHandler.CreateReview)
 			reviews.GET("/images/:imagePath", r.reviewHandler.GetImage)
@@ -46,4 +47,4 @@ func (r *Router) SetupRoutes() {
 
 func (r *Router) Run(addr string) error {
 	return r.engine.Run(addr)
-} 
+}
