@@ -7,7 +7,7 @@ CREATE TABLE categories
 );
 
 -- Добавляем базовые категории
-INSERT INTO categories (name) VALUES 
+INSERT INTO categories (name) VALUES
     ('Products'),
     ('Services'),
     ('Restaurants'),

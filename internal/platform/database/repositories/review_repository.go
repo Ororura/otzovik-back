@@ -17,7 +17,7 @@ func NewReviewRepository(db *gorm.DB) domain.ReviewRepository {
 
 func (r *ReviewRepository) GetAllReviews() ([]models.Review, error) {
 	var reviews []models.Review
-	err := r.db.Find(&reviews).Error
+	err := r.db.Preload("User").Preload("Category").Find(&reviews).Error
 	return reviews, err
 }
 
@@ -29,4 +29,4 @@ func (r *ReviewRepository) GetReviewById(id *int) (models.Review, error) {
 
 func (r *ReviewRepository) CreateReview(review *models.Review) error {
 	return r.db.Create(review).Error
-} 
+}
