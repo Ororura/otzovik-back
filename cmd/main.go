@@ -1,7 +1,9 @@
 package main
 
 import (
+	"github.com/gorilla/websocket"
 	"log"
+	"net/http"
 	"otzovik-back/config"
 	"otzovik-back/internal/app/services"
 	"otzovik-back/internal/platform/database/repositories"
@@ -14,6 +16,12 @@ func main() {
 
 	db := config.SetupDatabase(cfg)
 
+	var upgrader = websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+
 	userRepo := repositories.NewUserRepository(db)
 	reviewRepo := repositories.NewReviewRepository(db)
 
@@ -22,11 +30,12 @@ func main() {
 
 	userHandler := handlers.NewUserHandler(userService)
 	reviewHandler := handlers.NewReviewHandler(reviewService)
+	websocketHandler := handlers.NewWebsocketHandler(upgrader)
 
-	router := router.NewRouter(userHandler, reviewHandler)
-	router.SetupRoutes()
+	newRouter := router.NewRouter(userHandler, reviewHandler, websocketHandler)
+	newRouter.SetupRoutes()
 
-	if err := router.Run(":" + cfg.ServerPort); err != nil {
+	if err := newRouter.Run(":" + cfg.ServerPort); err != nil {
 		log.Fatalf("Server error: %v", err)
 	}
 }

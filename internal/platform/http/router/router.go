@@ -8,16 +8,18 @@ import (
 )
 
 type Router struct {
-	engine        *gin.Engine
-	userHandler   *handlers.UserHandler
-	reviewHandler *handlers.ReviewHandler
+	engine           *gin.Engine
+	userHandler      *handlers.UserHandler
+	reviewHandler    *handlers.ReviewHandler
+	websocketHandler *handlers.WebsocketHandler
 }
 
-func NewRouter(userHandler *handlers.UserHandler, reviewHandler *handlers.ReviewHandler) *Router {
+func NewRouter(userHandler *handlers.UserHandler, reviewHandler *handlers.ReviewHandler, websocketHandler *handlers.WebsocketHandler) *Router {
 	return &Router{
-		engine:        gin.Default(),
-		userHandler:   userHandler,
-		reviewHandler: reviewHandler,
+		engine:           gin.Default(),
+		userHandler:      userHandler,
+		reviewHandler:    reviewHandler,
+		websocketHandler: websocketHandler,
 	}
 }
 
@@ -27,6 +29,11 @@ func (r *Router) SetupRoutes() {
 
 	api := r.engine.Group("/api/v1")
 	{
+		websockets := api.Group("/ws")
+		{
+			websockets.GET("")
+		}
+
 		users := api.Group("/users")
 		{
 			users.GET("", r.userHandler.GetUsers)
