@@ -31,7 +31,7 @@ func (r *Router) SetupRoutes() {
 	{
 		websockets := api.Group("/ws")
 		{
-			websockets.GET("")
+			websockets.GET("", r.websocketHandler.InitWebsocket) // Привязка обработчика WebSocket
 		}
 
 		users := api.Group("/users")
