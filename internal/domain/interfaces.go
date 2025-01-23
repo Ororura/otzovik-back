@@ -16,9 +16,19 @@ type ReviewRepository interface {
 	CreateReview(review *models.Review) error
 }
 
+type ChatRepository interface {
+	SaveMessage(message *models.Messages) error
+	GetMessage(id *int) ([]*models.Messages, error)
+}
+
 type UserService interface {
 	GetAllUsers() ([]models.User, error)
 	CreateUser(user *models.User) error
+}
+
+type ChatService interface {
+	SaveMessage(message *models.Messages) error
+	GetMessage(id *int) ([]*models.Messages, error)
 }
 
 type ReviewService interface {
