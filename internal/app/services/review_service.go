@@ -47,4 +47,4 @@ func (s *ReviewService) GetImage(imagePath string) (string, error) {
 		return "", fmt.Errorf("image not found")
 	}
 	return fullPath, nil
-} 
+}

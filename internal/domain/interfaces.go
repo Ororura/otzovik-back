@@ -21,6 +21,11 @@ type UserService interface {
 	CreateUser(user *models.User) error
 }
 
+type ChatRepository interface {
+	SaveMessage(message *models.Messages) error
+	GetMessage(id *int) ([]*models.Messages, error)
+}
+
 type ReviewService interface {
 	GetAllReviews() ([]models.Review, error)
 	GetReviewById(id *int) (models.Review, error)
