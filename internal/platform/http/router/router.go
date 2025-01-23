@@ -26,6 +26,7 @@ func NewRouter(userHandler *handlers.UserHandler, reviewHandler *handlers.Review
 func (r *Router) SetupRoutes() {
 	r.engine.Use(middleware.Logger())
 	r.engine.Use(middleware.Recovery())
+	r.engine.Use(middleware.CORS())
 
 	api := r.engine.Group("/api/v1")
 	{
