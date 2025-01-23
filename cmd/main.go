@@ -24,13 +24,15 @@ func main() {
 
 	userRepo := repositories.NewUserRepository(db)
 	reviewRepo := repositories.NewReviewRepository(db)
+	chatRepo := repositories.NewChatRepo(db)
 
 	userService := services.NewUserService(userRepo)
 	reviewService := services.NewReviewService(reviewRepo, cfg.UploadDir)
+	chatService := services.NewChatService(chatRepo)
 
 	userHandler := handlers.NewUserHandler(userService)
 	reviewHandler := handlers.NewReviewHandler(reviewService)
-	websocketHandler := handlers.NewWebsocketHandler(upgrader)
+	websocketHandler := handlers.NewWebsocketHandler(chatService, upgrader)
 
 	newRouter := router.NewRouter(userHandler, reviewHandler, websocketHandler)
 	newRouter.SetupRoutes()

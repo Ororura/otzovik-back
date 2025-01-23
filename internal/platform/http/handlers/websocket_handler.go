@@ -6,14 +6,16 @@ import (
 	"github.com/gorilla/websocket"
 	_ "github.com/gorilla/websocket"
 	"log"
+	"otzovik-back/internal/domain"
 )
 
 type WebsocketHandler struct {
+	service  domain.ChatService
 	upgrader websocket.Upgrader
 }
 
-func NewWebsocketHandler(upgrader websocket.Upgrader) *WebsocketHandler {
-	return &WebsocketHandler{upgrader}
+func NewWebsocketHandler(service domain.ChatService, upgrader websocket.Upgrader) *WebsocketHandler {
+	return &WebsocketHandler{service, upgrader}
 }
 
 func (w *WebsocketHandler) InitWebsocket(c *gin.Context) {
@@ -43,7 +45,7 @@ func (w *WebsocketHandler) InitWebsocket(c *gin.Context) {
 			break
 		}
 
-		log.Println("Received message: %s", message)
+		log.Printf("Received message: %s\n", message)
 
 		responseMsg := fmt.Sprintf("Echo %s", message)
 
