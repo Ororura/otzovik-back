@@ -5,11 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"otzovik-back/internal/domain/models"
-
+	_ "github.com/lib/pq"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 type Config struct {
@@ -65,18 +62,3 @@ func ConnectDB(cfg *Config) (*sql.DB, error) {
 	return db, nil
 }
 
-func SetupDatabase(cfg *Config) *gorm.DB {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		cfg.DBHost, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBPort)
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := db.AutoMigrate(&models.User{}, &models.Review{}); err != nil {
-		log.Fatal(err)
-	}
-
-	return db
-}
