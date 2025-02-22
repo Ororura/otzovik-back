@@ -54,11 +54,11 @@ func ConnectDB(cfg *Config) (*sql.DB, error) {
 	db, err := sql.Open("postgres", dsn)
 
 	if err != nil {
-		return nil, fmt.Errorf("Error connection database, %v\n", err)
+		return nil, fmt.Errorf("error connection database, %v", err)
 	}
 
 	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("Lost connection databse, %v\n", err)
+		return nil, fmt.Errorf("lost connection databse, %v", err)
 	}
 
 	log.Println("Success connection!")
