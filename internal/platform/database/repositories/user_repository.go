@@ -17,8 +17,12 @@ func NewUserRepository(db *sql.DB) domain.UserRepository {
 
 func (r *UserRepository) GetAllUsers() ([]models.User, error) {
 	query := "SELECT id, username, email, password FROM users"
-	rows, err := r.db.Query(query)
 	var users []models.User
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("ошибка sql %v", err)
+	}
 
 	defer rows.Close()
 

@@ -17,23 +17,33 @@ func NewReviewRepository(db *sql.DB) domain.ReviewRepository {
 
 func (r *ReviewRepository) GetAllReviews() ([]models.Review, error) {
 	query := `
-			SELECT r.id, r.title, r.content, r.rating, r.image_path, u.id, u.username, u.password, c.id, c.name FROM reviews r 
+			SELECT r.id, r.title, r.content, r.rating, r.image_path, u.id, u.username, c.id, c.name FROM reviews r 
 			JOIN users u ON r.user_id = u.id
 			JOIN categories c ON r.category_id = c.id`
 	rows, err := r.db.Query(query)
 
+	if err != nil {
+		return nil, fmt.Errorf("ошибка sql %v", err)
+	}
+
 	defer rows.Close()
 
 	var reviews []models.Review
+	var imagePath sql.NullString
 
 	for rows.Next() {
 		var review models.Review
 		if err := rows.Scan(
-			&review.ID, &review.Title, &review.Content, &review.Rating, &review.ImagePath,
+			&review.ID, &review.Title, &review.Content, &review.Rating, &imagePath,
 			&review.UserID, &review.UserName,
 			&review.CategoryID, &review.CategoryName,
 		); err != nil {
 			return nil, fmt.Errorf("scan error %v", err)
+		}
+
+		review.ImagePath = ""
+		if imagePath.Valid {
+			review.ImagePath = imagePath.String 
 		}
 
 		reviews = append(reviews, review)
