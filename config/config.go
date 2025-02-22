@@ -1,6 +1,7 @@
 package config
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
@@ -42,6 +43,26 @@ func getEnv(key, defaultValue string) string {
 		return value
 	}
 	return defaultValue
+}
+
+func ConnectDB(cfg *Config) (*sql.DB, error) {
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName,
+	)
+
+	db, err := sql.Open("postgres", dsn)
+
+	if err != nil {
+		return nil, fmt.Errorf("Error connection database, %v\n", err)
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, fmt.Errorf("Lost connection databse, %v\n", err)
+	}
+
+	log.Println("Success connection!")
+	return db, nil
 }
 
 func SetupDatabase(cfg *Config) *gorm.DB {
