@@ -14,7 +14,13 @@ import (
 func main() {
 	cfg := config.LoadConfig()
 
-	db := config.SetupDatabase(cfg)
+	db, err := config.ConnectDB(cfg)
+
+	if err != nil {
+		log.Fatalf("Databse error: %v", err)
+	}
+
+	defer db.Close()
 
 	var upgrader = websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {

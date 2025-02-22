@@ -77,7 +77,7 @@ func (r *ReviewRepository) CreateReview(review *models.Review) error {
 	query := "INSERT INTO reviews(title, content, rating, image_path, user_id, category_id) VALUES ($1, $2, $3, $4, $5, $6)"
 	err := r.db.QueryRow(query, review.Title, review.Content, review.ImagePath, review.UserID, review.CategoryID).Scan(&review.ID)
 	if err != nil {
-		return fmt.Errorf("Ошибка при сохранении отзыва %v", err)
+		return fmt.Errorf("ошибка при сохранении отзыва %v", err)
 	}
 	return nil
 }
